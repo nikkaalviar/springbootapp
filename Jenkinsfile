@@ -1,11 +1,11 @@
-def registry  ='https://nikkaalviar.jfrog.io'
+def registry = 'https://nikkaalviar.jfrog.io'
 pipeline {
     tools {
-        maven "Maven3"
+        maven 'Maven3'
     }
     agent any
-     environment {
-        SCANNER_HOME= tool 'sonar-scanner'
+    environment {
+        SCANNER_HOME = tool 'sonar-scanner'
     }
     stages {
         stage('Checkout From Git') {
@@ -34,20 +34,20 @@ pipeline {
                 }
             }
         }
-        stage ('Quality Gate') {
+        stage('Quality Gate') {
             steps {
                 script {
                     waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
                 }
             }
         }
-         stage("Jar Publish") {
+        stage('Jar Publish') {
             steps {
                 script {
                         echo '<--------------- Jar Publish Started --------------->'
-                         def server = Artifactory.newServer url:registry+"/artifactory" ,  credentialsId:"jfrog"
-                         def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}";
-                         def uploadSpec = """{
+                    def server = Artifactory.newServer url:registry + '/artifactory' ,  credentialsId:'jfrog'
+                    def properties = "buildid=${env.BUILD_ID},commitid=${GIT_COMMIT}"
+                    def uploadSpec = """{
                               "files": [
                                 {
                                   "pattern": "target/springbootApp.jar",
@@ -58,13 +58,19 @@ pipeline {
                                 }
                              ]
                          }"""
-                         def buildInfo = server.upload(uploadSpec)
-                         buildInfo.env.collect()
-                         server.publishBuildInfo(buildInfo)
-                         echo '<--------------- Jar Publish Ended --------------->'  
-                
+                    def buildInfo = server.upload(uploadSpec)
+                    buildInfo.env.collect()
+                    server.publishBuildInfo(buildInfo)
+                    echo '<--------------- Jar Publish Ended --------------->'
                 }
-            }   
-        } 
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                script {
+                    sh 'docker build -t myrepo .'
+                }
+            }
+        }
     }
 }
