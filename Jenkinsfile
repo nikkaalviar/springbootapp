@@ -1,4 +1,8 @@
 pipeline {
+    tools {
+        maven "Maven3"
+    }
+    agent any
     stages {
         stage('Checkout From Git') {
             steps {
@@ -21,7 +25,7 @@ pipeline {
             steps {
                 script {
                     withSonarQubeEnv('sonar-server') {
-                        sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=nikkaalviar_springbootapp '''
+                        sh '''$SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=nikkaalviar_springbootapp'''
                     }
                 }
             }
