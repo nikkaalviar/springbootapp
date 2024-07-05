@@ -68,7 +68,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 script {
-                    sh 'docker build -t springbootapp .'
+                    sh 'docker build -t myrepo .'
                 }
             }
         }
@@ -76,7 +76,7 @@ pipeline {
             steps {
                 script {
                     sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 305390819466.dkr.ecr.us-east-1.amazonaws.com'
-                    sh 'docker tag springbootapp:latest 305390819466.dkr.ecr.us-east-1.amazonaws.com/springbootapp:latest'
+                    sh 'docker tag myrepo:latest 305390819466.dkr.ecr.us-east-1.amazonaws.com/springbootapp:latest'
                     sh 'docker push 305390819466.dkr.ecr.us-east-1.amazonaws.com/springbootapp:latest'
                 }
             }
