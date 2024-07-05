@@ -19,19 +19,19 @@ pipeline {
         }
         stage('SonarQube Analysis') {
             steps {
-               script {
-                withSonarQubeEnv('sonar-server') {
-                sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=nikkaalviar_springbootapp '''
+                script {
+                    withSonarQubeEnv('sonar-server') {
+                        sh ''' $SCANNER_HOME/bin/sonar-scanner -Dsonar.projectName=springbootapp -Dsonar.projectKey=nikkaalviar_springbootapp '''
+                    }
                 }
-               }
             }
         }
-        stage ('Quality Gate'){
-        steps {
-            script {
-                waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
+        stage ('Quality Gate') {
+            steps {
+                script {
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar'
+                }
             }
         }
-      }
     }
 }
