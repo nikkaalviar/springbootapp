@@ -81,6 +81,12 @@ pipeline {
                 }
             }
         }
-        
+         stage ('Deploy to Kubernetes'){
+            steps {
+                script {
+                    sh 'kubectl apply -f eks-deploy-k8s.yaml --validate=false'
+                }
+            }
+        }    
     }
 }
