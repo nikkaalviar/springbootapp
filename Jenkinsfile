@@ -72,6 +72,21 @@ pipeline {
                 }
             }
         }
-      
+       stage('Push Docker Image') {
+            steps {
+                script {
+                    sh 'aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 305390819466.dkr.ecr.us-east-1.amazonaws.com'
+                    sh 'docker tag myrepo:latest 305390819466.dkr.ecr.us-east-1.amazonaws.com/springbootapp:latest'
+                    sh 'docker push 305390819466.dkr.ecr.us-east-1.amazonaws.com/springbootapp:latest'
+                }
+            }
+        }
+         stage ('Deploy to Kubernetes'){
+            steps {
+                script {
+                    sh 'kubectl apply -f eks-deploy-k8s.yaml --validate=false'
+                }
+            }
+        }    
     }
 }
